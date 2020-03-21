@@ -93,6 +93,8 @@ public abstract class BaseDao {
             return queryRunner.query(conn, sql, new ScalarHandler(), args);
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            JdbcUtils.close(conn);
         }
         return null;
     }
