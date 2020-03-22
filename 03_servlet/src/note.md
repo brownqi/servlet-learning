@@ -93,6 +93,8 @@
 
 ## JavaEE 三层架构
 
+### 目录结构
+
 - web层
 
   - cn.brownqi.web/servlet/controllercom
@@ -284,4 +286,499 @@ public class JdbcUtils {
 }
 
 ```
+
+### 编写 BaseDao
+
+```java
+package cn.brownqi.dao.impl;
+
+import cn.brownqi.utils.JdbcUtils;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+/**
+ * @Description:
+ * @Author: BrownQi
+ * @date: 2020-03-21 23:03
+ */
+public abstract class BaseDao {
+
+    //使用DbUtils操作数据库
+    private QueryRunner queryRunner = new QueryRunner();
+
+    /**
+     * update() 方法用来执行：insert、update、delete语句
+     *
+     * @return 如果返回-1，说明执行失败。返回其他表示影响的行数
+     */
+    public int update(String sql, Object... args) {
+
+        Connection conn = JdbcUtils.getConnection();
+        try {
+            return queryRunner.update(conn, sql, args);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtils.close(conn);
+        }
+        return -1;
+    }
+
+    /**
+     * 查询返回一个JavaBean的sql语句
+     *
+     * @param type 返回的对象类型
+     * @param sql  执行的sql语句
+     * @param args sql对应的参数值
+     * @param <T>  返回的类型的泛型
+     * @return
+     */
+    public <T> T queryForOne(Class<T> type, String sql, Object... args) {
+        Connection conn = JdbcUtils.getConnection();
+        try {
+            return queryRunner.query(conn, sql, new BeanHandler<T>(type));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtils.close(conn);
+        }
+        return null;
+    }
+
+    /**
+     * 查询返回多个JavaBean的sql语句
+     *
+     * @param type 返回的对象类型
+     * @param sql  执行的sql语句
+     * @param args sql对应的参数值
+     * @param <T>  返回的类型的泛型
+     * @return
+     */
+    public <T> List<T> queryForList(Class<T> type, String sql, Object... args) {
+        Connection conn = JdbcUtils.getConnection();
+        try {
+            return queryRunner.query(conn, sql, new BeanListHandler<T>(type));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtils.close(conn);
+        }
+        return null;
+    }
+
+    /**
+     * 执行返回一行一列的sql语句
+     *
+     * @param sql 执行的sql语句
+     * @param args sql对应的参数值
+     * @return
+     */
+    public Object queryForSingleValue(String sql, Object... args) {
+        Connection conn = JdbcUtils.getConnection();
+        try {
+            return queryRunner.query(conn, sql, new ScalarHandler(), args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            JdbcUtils.close(conn);
+        }
+        return null;
+    }
+
+}
+
+```
+
+### 编写 UserDao 和测试
+
+#### UserDao
+
+```java
+package cn.brownqi.dao;
+
+import cn.brownqi.pojo.User;
+
+/**
+ * @Description:
+ * @Author: BrownQi
+ * @date: 2020-03-22 00:05
+ */
+public interface UserDao {
+
+    /**
+     * 根据用户名查询用户信息
+     * @param username 用户名
+     * @return 如果返回null，说明没有这个用户。
+     */
+    User queryUserByUsername(String username);
+
+    /**
+     * 根据用户名和密码查询用户信息
+     * @param username
+     * @param password
+     * @return 如果返回null，说明用户名或密码错误。
+     */
+    User queryUserByUsernameAndPassword(String username,String password);
+
+    /**
+     * 保存用户信息
+     * @param user
+     * @return 返回 -1 表示操作失败，其他是sql语句影响的行数
+     */
+    int saveUser(User user);
+    
+}
+
+```
+
+#### UserDaoImpl实现类
+
+````java
+package cn.brownqi.dao.impl;
+
+import cn.brownqi.dao.UserDao;
+import cn.brownqi.pojo.User;
+
+/**
+ * @Description:
+ * @Author: BrownQi
+ * @date: 2020-03-22 00:29
+ */
+public class UserDaoImpl extends BaseDao implements UserDao {
+    @Override
+    public User queryUserByUsername(String username) {
+        String sql = "select `id`,`username`,`password`,`email` from t_user where username = ?";
+        return queryForOne(User.class,sql,username);
+    }
+
+    @Override
+    public User queryUserByUsernameAndPassword(String username, String password) {
+        String sql = "select `id`,`username`,`password`,`email` from t_user where username = ? and password = ?";
+        return queryForOne(User.class,sql,username,password);
+    }
+
+    @Override
+    public int saveUser(User user) {
+        String sql = "insert into t_user(`username`,`password`,`email`) VALUES(?,?,?);";
+        return update(sql,user.getUsername(),user.getPassword(),user.getEmail());
+    }
+
+
+}
+
+````
+
+#### UserDao测试类
+
+```java
+package cn.brownqi.test;
+
+import cn.brownqi.dao.UserDao;
+import cn.brownqi.dao.impl.UserDaoImpl;
+import cn.brownqi.pojo.User;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+/**
+ * @Description:
+ * @Author: BrownQi
+ * @date: 2020-03-22 00:38
+ */
+public class UserDaoTest {
+    UserDao userDao = new UserDaoImpl();
+
+    @Test
+    public void queryUserByUsername() {
+        if (userDao.queryUserByUsername("admin") == null) {
+            System.out.println("用户名可用！");
+        } else {
+            System.out.println("用户名已存在！");
+        }
+//        System.out.println(userDao.queryUserByUsername("admin"));
+//        System.out.println(userDao.queryUserByUsername("brownqi"));
+    }
+
+    @Test
+    public void queryUserByUsernameAndPassword() {
+        if (userDao.queryUserByUsernameAndPassword("admin1", "admin") == null) {
+            System.out.println("用户名或密码错误，登陆失败");
+        } else {
+            System.out.println("查询成功");
+        }
+
+    }
+
+    @Test
+    public void saveUser() {
+        System.out.println(userDao.saveUser(new User(null, "brownqi", "123", "123@xx.com")));
+    }
+}
+```
+
+### 编写UserService 和 测试
+
+#### UserService
+
+```java
+package cn.brownqi.service;
+
+import cn.brownqi.pojo.User;
+
+/**
+ * @Description:
+ * @Author: BrownQi
+ * @date: 2020-03-22 09:40
+ */
+public interface UserService {
+
+    /**
+     * 注册用户
+     * @param user
+     */
+    public void registUser(User user);
+
+    /**
+     * 登录
+     * @param user
+     * @return 如果返回null，说明登陆失败，返回有值，是登陆成功
+     */
+    public User login(User user);
+
+    /**
+     * 检查用户名是否可用
+     * @param username
+     * @return 返回 true 表示用户名已存在，返回 false 表示用户名可用
+     */
+    public boolean existsUsername(String username);
+
+}
+
+```
+
+#### UserServiceImpl
+
+```java
+package cn.brownqi.service.impl;
+
+import cn.brownqi.dao.UserDao;
+import cn.brownqi.dao.impl.UserDaoImpl;
+import cn.brownqi.pojo.User;
+import cn.brownqi.service.UserService;
+
+/**
+ * @Description:
+ * @Author: BrownQi
+ * @date: 2020-03-22 09:47
+ */
+public class UserServiceImpl implements UserService {
+
+    private UserDao userDao = new UserDaoImpl();
+
+    @Override
+    public void registUser(User user) {
+        userDao.saveUser(user);
+    }
+
+    @Override
+    public User login(User user) {
+        return userDao.queryUserByUsernameAndPassword(user.getUsername(),user.getPassword());
+    }
+
+    @Override
+    public boolean existsUsername(String username) {
+        if (userDao.queryUserByUsername(username) == null){
+            return false;
+        }else{
+            return true;
+        }
+    }
+}
+
+```
+
+#### UserServiceTest
+
+```java
+package cn.brownqi.test;
+
+import cn.brownqi.pojo.User;
+import cn.brownqi.service.UserService;
+import cn.brownqi.service.impl.UserServiceImpl;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+/**
+ * @Description:
+ * @Author: BrownQi
+ * @date: 2020-03-22 09:54
+ */
+public class UserServiceTest {
+
+    UserService userService = new UserServiceImpl();
+
+    @Test
+    public void registUser() {
+        userService.registUser(new User(null,"dodo1","123","dodo@xx.com"));
+        userService.registUser(new User(null,"dodo2","123","dodo@xx.com"));
+    }
+
+    @Test
+    public void login() {
+        System.out.println(userService.login(new User(null,"dodo1","123",null)));
+    }
+
+    @Test
+    public void existsUsername() {
+        if (userService.existsUsername("dodo1")){
+            System.out.println("用户名已存在");
+        }else {
+            System.out.println("用户名可用");
+        }
+    }
+}
+```
+
+### Servlet
+
+#### RegistServlet程序
+
+- 结构
+  1. 获取请求参数
+  2. 检查验证码是否正确
+     - 正确
+       - 检查用户名是否可用
+         - 可用：调用Service保存到数据库，跳转注册成功页面
+         - 不可用：跳回注册页面
+     - 不正确
+       - 返回注册页面
+  
+- 实现
+
+  ```java
+  package cn.brownqi.web;
+  
+  import cn.brownqi.pojo.User;
+  import cn.brownqi.service.UserService;
+  import cn.brownqi.service.impl.UserServiceImpl;
+  
+  import javax.servlet.ServletException;
+  import javax.servlet.http.HttpServlet;
+  import javax.servlet.http.HttpServletRequest;
+  import javax.servlet.http.HttpServletResponse;
+  import java.io.IOException;
+  
+  /**
+   * @Description:
+   * @Author: BrownQi
+   * @date: 2020-03-22 14:04
+   */
+  public class RegistServlet extends HttpServlet {
+      private UserService userService = new UserServiceImpl();
+  
+      protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  //        1. 获取请求参数
+          String username = request.getParameter("username");
+          String password = request.getParameter("password");
+          String email = request.getParameter("email");
+          String code = request.getParameter("code"); //验证码写死abcde
+  
+  //        2. 检查验证码是否正确
+          if ("abcde".equalsIgnoreCase(code)) {
+  //                - 正确
+  //                    - 检查用户名是否可用
+              if (userService.existsUsername(username)) {
+  //                        - 不可用：跳回注册页面
+                  System.out.println("用户名"+username+"已存在！");
+                  request.getRequestDispatcher("/pages/user/regist.html").forward(request, response);
+  
+              } else {
+  //                        - 可用：调用Service保存到数据库，跳转注册成功页面
+                  userService.registUser(new User(null,username,password,email));
+                  request.getRequestDispatcher("/pages/user/regist_success.html").forward(request,response);
+              }
+          } else {
+  //                - 不正确
+  //                    - 返回注册页面
+              System.out.println("验证码" + code + "错误");
+              request.getRequestDispatcher("/pages/user/regist.html").forward(request, response);
+          }
+      }
+  
+      protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  
+      }
+  }
+  
+  ```
+
+#### LoginServlet程序
+
+- 结构
+
+  1. 获取请求的参数
+  2. 调用userService.login()登陆
+  3. 根据userService.login()方法返回结果判断登陆是否成功
+     - 成功：跳转成功页面
+     - 失败：跳回登陆页面
+
+- 实现
+
+  ```java
+  package cn.brownqi.web;
+  
+  import cn.brownqi.pojo.User;
+  import cn.brownqi.service.UserService;
+  import cn.brownqi.service.impl.UserServiceImpl;
+  
+  import javax.servlet.ServletException;
+  import javax.servlet.http.HttpServlet;
+  import javax.servlet.http.HttpServletRequest;
+  import javax.servlet.http.HttpServletResponse;
+  import java.io.IOException;
+  
+  /**
+   * @Description:
+   * @Author: BrownQi
+   * @date: 2020-03-22 16:38
+   */
+  public class LoginServlet extends HttpServlet {
+  
+      UserService userService = new UserServiceImpl();
+  
+      protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  //        1. 获取请求的参数
+          String username = request.getParameter("username");
+          String password = request.getParameter("password");
+  //        2. 调用userService.login()登陆
+          User loginUser = userService.login(new User(null, username, password, null));
+  //        3. 根据userService.login()方法返回结果判断登陆是否成功
+          if (loginUser == null) {
+  //                - 失败：跳回登陆页面
+              System.out.println("用户名或密码错误");
+              request.getRequestDispatcher("pages/user/login.html").forward(request,response);
+          } else {
+  //                - 成功：跳转成功页面
+              System.out.println("登陆成功");
+              request.getRequestDispatcher("pages/user/login_success.html").forward(request,response);
+          }
+  
+  
+      }
+  
+      protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  
+      }
+  }
+  
+  ```
+
+  
 
