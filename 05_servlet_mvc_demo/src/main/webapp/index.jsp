@@ -44,7 +44,7 @@
     %>
     <tr>
         <td><%=good.getGoodId()%></td>
-        <td><a href="/good/detail?goodid=<%=good.getGoodId()%>"><%=good.getGoodName()%></a></td>
+        <td><a href="/goodServlet/detail?goodid=<%=good.getGoodId()%>"><%=good.getGoodName()%></a></td>
         <td><%=good.getGoodPrice()%></td>
         <td><%=good.getGoodCount()%></td>
     </tr>

@@ -20,4 +20,11 @@ public class GoodDaoImpl extends BaseDao implements GoodDao {
         List<Good> goods = queryForList(Good.class,sql,goodName);
         return goods;
     }
+
+    @Override
+    public Good queryGoodByID(String goodID) {
+        String sql = "SELECT * FROM t_good WHERE goodid = ?";
+        Good good = queryForOne(Good.class, sql, goodID);
+        return good;
+    }
 }

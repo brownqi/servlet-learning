@@ -20,4 +20,9 @@ public class GoodServiceImpl implements GoodService {
     public List<Good> selectGoodsByName(String goodName) {
         return goodDao.queryGoodByName(goodName);
     }
+
+    @Override
+    public Good searchGoodDetail(String goodId) {
+        return goodDao.queryGoodByID(goodId);
+    }
 }

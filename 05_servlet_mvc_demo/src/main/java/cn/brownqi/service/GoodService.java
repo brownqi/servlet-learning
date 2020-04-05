@@ -9,4 +9,5 @@ public interface GoodService {
 
     List<Good> selectGoodsByName(String goodName);
 
+    Good searchGoodDetail(String goodId);
 }
