@@ -7,8 +7,6 @@ public class Good {
     private String goodName;
     private BigDecimal goodPrice;
     private Integer goodCount;
-    private String goodBrand;
-    private String goodClass;
 
     public String getGoodId() {
         return goodId;
@@ -42,19 +40,5 @@ public class Good {
         this.goodCount = goodCount;
     }
 
-    public String getGoodBrand() {
-        return goodBrand;
-    }
 
-    public void setGoodBrand(String goodBrand) {
-        this.goodBrand = goodBrand;
-    }
-
-    public String getGoodClass() {
-        return goodClass;
-    }
-
-    public void setGoodClass(String goodClass) {
-        this.goodClass = goodClass;
-    }
 }

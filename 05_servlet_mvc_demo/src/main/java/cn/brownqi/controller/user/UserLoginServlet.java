@@ -23,7 +23,8 @@ public class UserLoginServlet extends HttpServlet {
             User loginUser = userService.login(user);
             HttpSession session = req.getSession();
             session.setAttribute("user",loginUser);
-            req.getRequestDispatcher("/index.jsp").forward(req,resp);
+//            req.getRequestDispatcher("/index.jsp").forward(req,resp);
+            resp.sendRedirect("/goodServlet/index");
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("login-message",e.getMessage());

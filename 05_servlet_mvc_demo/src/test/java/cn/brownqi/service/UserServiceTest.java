@@ -15,13 +15,21 @@ public class UserServiceTest {
     public void registUser() {
         Date date1 = DateUtils.strToDate("2020-1-1");
         Date date2 = DateUtils.strToDate("2020-2-2");
-        userService.addUser(new User(null,"dodo1","123",date1));
-        userService.addUser(new User(null,"dodo2","123",date2));
+        try {
+            userService.addUser(new User(null,"dodo1","123",date1));
+            userService.addUser(new User(null,"dodo2","123",date2));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void login() {
-        System.out.println(userService.login(new User(null,"dodo1","123",null)));
+        try {
+            System.out.println(userService.login(new User(null,"dodo1","123",null)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

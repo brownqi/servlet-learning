@@ -2,11 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/01_web/01_web.iml" filepath="$PROJECT_DIR$/01_web/01_web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/02_servlet/02_servlet.iml" filepath="$PROJECT_DIR$/02_servlet/02_servlet.iml" />
       <module fileurl="file://$PROJECT_DIR$/03_servlet/03_servlet.iml" filepath="$PROJECT_DIR$/03_servlet/03_servlet.iml" />
-      <module fileurl="file://$PROJECT_DIR$/JavaWeb.iml" filepath="$PROJECT_DIR$/JavaWeb.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Servlet/Servlet.iml" filepath="$PROJECT_DIR$/Servlet/Servlet.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Web/Web.iml" filepath="$PROJECT_DIR$/Web/Web.iml" />
-      <module fileurl="file://$PROJECT_DIR$/book/book.iml" filepath="$PROJECT_DIR$/book/book.iml" />
+      <module fileurl="file://$PROJECT_DIR$/04_book/04_book.iml" filepath="$PROJECT_DIR$/04_book/04_book.iml" />
+      <module fileurl="file://$PROJECT_DIR$/05_servlet_mvc_demo/05_servlet_mvc_demo.iml" filepath="$PROJECT_DIR$/05_servlet_mvc_demo/05_servlet_mvc_demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/servlet-learning.iml" filepath="$PROJECT_DIR$/servlet-learning.iml" />
     </modules>
   </component>
 </project>

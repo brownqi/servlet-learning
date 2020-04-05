@@ -73,6 +73,25 @@ public abstract class BaseDao {
        return null;
    }
 
+    /**
+     *  查询所有
+     * @param type
+     * @param sql
+     * @param <T>
+     * @return
+     */
+    public <T> List<T> queryAll(Class<T> type,String sql){
+        Connection connection = JdbcUtils.getConnection();
+        try {
+            return queryRunner.query(connection,sql,new BeanListHandler<T>(type));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            JdbcUtils.close(connection);
+        }
+        return null;
+    }
+
 
     /**
      * 执行返回一行一列的sql语句

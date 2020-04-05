@@ -2,14 +2,14 @@
   <artifact type="exploded-war" name="book:war exploded">
     <output-path>$PROJECT_DIR$/out/artifacts/book_war_exploded</output-path>
     <root id="root">
-      <element id="javaee-facet-resources" facet="book/web/Web" />
+      <element id="javaee-facet-resources" facet="04_book/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
-          <element id="module-output" name="book" />
+          <element id="module-output" name="04_book" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="book_lib" />
           <element id="library" level="module" name="JUnit4" module-name="book" />
+          <element id="library" level="project" name="04_book" />
         </element>
       </element>
     </root>
