@@ -12,14 +12,17 @@ import java.util.Properties;
 
 public class JdbcUtils {
 
+    private JdbcUtils(){}
+
     private static DruidDataSource dataSource;
 
-    static {
+    public static void initDataSource(){
         try {
             Properties properties = new Properties();
             InputStream resourceAsStream = JdbcUtils.class.getClassLoader().getResourceAsStream("jdbc.properties");
             properties.load(resourceAsStream);
             dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
+            System.out.println("数据库连接池创建成功！");
         } catch (Exception e) {
             e.printStackTrace();
         }

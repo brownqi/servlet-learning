@@ -12,8 +12,7 @@ import java.io.IOException;
 public class UserServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String[] split = req.getRequestURI().split("/");
-        RequestDispatcher requestDispatcher = req.getRequestDispatcher("/"+split[2]);
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher(req.getRequestURI());
         requestDispatcher.forward(req,resp);
     }
 }
