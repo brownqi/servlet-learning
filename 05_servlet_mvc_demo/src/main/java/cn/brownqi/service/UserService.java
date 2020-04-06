@@ -9,7 +9,7 @@ public interface UserService {
      * 注册用户
      * @param user
      */
-    public int addUser(User user) throws Exception;
+    public User addUser(User user) throws Exception;
 
     /**
      * 登录
