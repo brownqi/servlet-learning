@@ -1,8 +1,10 @@
 package cn.brownqi.controller.order;
 
 import cn.brownqi.model.Order;
+import cn.brownqi.rest.Result;
 import cn.brownqi.service.OrderService;
 import cn.brownqi.service.impl.OrderServiceImpl;
+import cn.brownqi.utils.JSONUtil;
 import cn.brownqi.utils.ParameterUtils;
 
 import javax.servlet.ServletException;
@@ -18,11 +20,15 @@ public class PayOrderServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Order order = ParameterUtils.newModel(req,Order.class);
+        Result result = null;
         try {
             orderService.payOrder(order.getOrderId());
-            resp.sendRedirect("/orderServlet/queryOrders");
+            result = Result.OK(2000,"成功",order);
         } catch (Exception e) {
             e.printStackTrace();
+            result = Result.ERROR(4001,e.getMessage());
+        }finally {
+            JSONUtil.writeJSON(resp,result);
         }
     }
 }
