@@ -10,4 +10,6 @@ public interface OrderService {
     void addOrder(Order order) throws Exception;
 
     Map<Order, Good> queryOrders(Integer userId) throws Exception;
+
+    void payOrder(String orderId) throws Exception;
 }

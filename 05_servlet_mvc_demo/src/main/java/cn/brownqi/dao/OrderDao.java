@@ -11,4 +11,5 @@ public interface OrderDao {
 
     Map<Order, Good> queryOrdersByID(Integer userId) throws Exception;
 
+    void setOrderState(String orderId) throws Exception;
 }

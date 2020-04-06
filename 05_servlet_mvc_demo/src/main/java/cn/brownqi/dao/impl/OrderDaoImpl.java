@@ -29,6 +29,12 @@ public class OrderDaoImpl extends BaseDao implements OrderDao {
         return orderGoodMap;
     }
 
+    @Override
+    public void setOrderState(String orderId) throws Exception {
+        String sql = "UPDATE t_order set orderstate = 1 where orderid = ?";
+        update(sql,orderId);
+    }
+
     /**
      * t_order 表 与 t_good 表 多表查询
      * @param sql

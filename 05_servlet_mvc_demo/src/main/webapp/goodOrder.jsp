@@ -50,7 +50,7 @@
                 if (orderState == 1) {
                     word = "已支付";
                 } else {
-                    word = "<a href=\"/order/pay?orderid=" + order.getOrderId() + "\" >支付</a>";
+                    word = "<a href=\"/orderServlet/pay?orderid=" + order.getOrderId() + "\" >支付</a>";
                 }
             %>
             <%=word%>

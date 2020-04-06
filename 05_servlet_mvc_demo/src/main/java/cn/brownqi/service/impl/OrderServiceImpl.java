@@ -26,4 +26,9 @@ public class OrderServiceImpl implements OrderService {
         return orderDao.queryOrdersByID(userId);
     }
 
+    @Override
+    public synchronized void payOrder(String orderId) throws Exception {
+        orderDao.setOrderState(orderId);
+    }
+
 }
