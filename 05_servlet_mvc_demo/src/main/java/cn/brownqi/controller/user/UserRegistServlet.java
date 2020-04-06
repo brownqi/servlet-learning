@@ -26,7 +26,6 @@ public class UserRegistServlet extends HttpServlet {
 
         try{
             user = userService.addUser(user);
-            req.getRequestDispatcher("/userLogin.jsp").forward(req,resp);
             result = Result.OK(2000,"注册成功",user);
         }catch (Exception e){
             result = Result.ERROR(4000,e.getMessage());

@@ -28,7 +28,6 @@ public class UserLoginServlet extends HttpServlet {
             HttpSession session = req.getSession();
             session.setAttribute("user",loginUser);
             result = Result.OK(2000,"登陆成功",loginUser);
-            resp.sendRedirect("/goodServlet/index");
         } catch (LoginException e) {
             e.printStackTrace();
             result = Result.ERROR(4002,e.getMessage());
