@@ -1,6 +1,7 @@
 package cn.brownqi.controller.good;
 
 import cn.brownqi.model.Good;
+import cn.brownqi.rest.Result;
 import cn.brownqi.service.GoodService;
 import cn.brownqi.service.impl.GoodServiceImpl;
 import cn.brownqi.utils.JSONUtil;
@@ -16,15 +17,17 @@ import java.util.List;
 @WebServlet("/goodServlet/index")
 public class GoodIndex extends HttpServlet {
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         GoodService goodService = new GoodServiceImpl();
-
+        Result result = null;
         try{
             List<Good> goods = goodService.selectAllGoods();
+            result = Result.OK(2000,"成功",goods);
             req.setAttribute("goods",goods);
-            req.getRequestDispatcher("/index.jsp").forward(req,resp);
         }catch (Exception e){
             e.printStackTrace();
+        }finally {
+            JSONUtil.writeJSON(resp,result);
         }
     }
 }
