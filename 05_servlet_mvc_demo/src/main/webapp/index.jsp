@@ -19,6 +19,9 @@
     <a href="/userLogin.jsp">登陆</a>
 </p>
 
+<p>
+    <a href="/orderServlet/queryOrders">查看购物车</a>
+</p>
 
 <p>
 <form action="/goodServlet/search" method="get">

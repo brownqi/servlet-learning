@@ -8,6 +8,16 @@ public class Good {
     private BigDecimal goodPrice;
     private Integer goodCount;
 
+    public Good() {
+    }
+
+    public Good(String goodId, String goodName, BigDecimal goodPrice, Integer goodCount) {
+        this.goodId = goodId;
+        this.goodName = goodName;
+        this.goodPrice = goodPrice;
+        this.goodCount = goodCount;
+    }
+
     public String getGoodId() {
         return goodId;
     }

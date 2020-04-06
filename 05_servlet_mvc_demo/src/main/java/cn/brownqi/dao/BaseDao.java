@@ -1,19 +1,27 @@
 package cn.brownqi.dao;
 
+import cn.brownqi.model.Order;
 import cn.brownqi.utils.JdbcUtils;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.RowProcessor;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class BaseDao {
 
     //使用dbutils操作数据库
-    private QueryRunner queryRunner = new QueryRunner();
+    protected static QueryRunner queryRunner = new QueryRunner();
 
     /**
      * update() 方法用来执行：insert、update、delete语句
@@ -110,6 +118,4 @@ public abstract class BaseDao {
         }
         return null;
     }
-
-
 }

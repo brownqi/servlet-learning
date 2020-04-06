@@ -8,6 +8,17 @@ public class Order {
     private Integer orderCount;
     private Integer orderState;
 
+    public Order() {
+    }
+
+    public Order(String orderId, Integer userId, String goodId, Integer orderCount, Integer orderState) {
+        this.orderId = orderId;
+        this.userId = userId;
+        this.goodId = goodId;
+        this.orderCount = orderCount;
+        this.orderState = orderState;
+    }
+
     public String getOrderId() {
         return orderId;
     }

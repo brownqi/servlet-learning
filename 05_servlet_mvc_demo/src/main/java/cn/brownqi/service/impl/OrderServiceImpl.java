@@ -2,8 +2,12 @@ package cn.brownqi.service.impl;
 
 import cn.brownqi.dao.OrderDao;
 import cn.brownqi.dao.impl.OrderDaoImpl;
+import cn.brownqi.model.Good;
 import cn.brownqi.model.Order;
 import cn.brownqi.service.OrderService;
+
+import java.util.List;
+import java.util.Map;
 
 public class OrderServiceImpl implements OrderService {
     private OrderDao orderDao = new OrderDaoImpl();
@@ -16,4 +20,10 @@ public class OrderServiceImpl implements OrderService {
 
         orderDao.saveOrder(order);
     }
+
+    @Override
+    public Map<Order, Good> queryOrders(Integer userId) throws Exception {
+        return orderDao.queryOrdersByID(userId);
+    }
+
 }
