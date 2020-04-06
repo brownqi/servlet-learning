@@ -26,6 +26,7 @@ public class GoodDetail extends HttpServlet {
             result = Result.OK(2000,"成功",goodDetail);
         }catch (Exception e){
             e.printStackTrace();
+            result = Result.ERROR(4000,e.getMessage());
         }finally {
             JSONUtil.writeJSON(resp,result);
         }

@@ -26,6 +26,7 @@ public class GoodIndex extends HttpServlet {
             req.setAttribute("goods",goods);
         }catch (Exception e){
             e.printStackTrace();
+            result = Result.ERROR(4000,e.getMessage());
         }finally {
             JSONUtil.writeJSON(resp,result);
         }

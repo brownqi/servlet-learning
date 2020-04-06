@@ -27,6 +27,7 @@ public class GoodSearch extends HttpServlet {
             result = Result.OK(2000,"成功",goods);
         }catch (Exception e){
             e.printStackTrace();
+            result = Result.ERROR(4000,e.getMessage());
         }finally {
             JSONUtil.writeJSON(resp,result);
         }
