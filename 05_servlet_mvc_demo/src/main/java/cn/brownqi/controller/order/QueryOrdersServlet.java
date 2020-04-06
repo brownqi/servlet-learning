@@ -4,8 +4,10 @@ import cn.brownqi.exception.NoLoginException;
 import cn.brownqi.model.Good;
 import cn.brownqi.model.Order;
 import cn.brownqi.model.User;
+import cn.brownqi.rest.Result;
 import cn.brownqi.service.OrderService;
 import cn.brownqi.service.impl.OrderServiceImpl;
+import cn.brownqi.utils.JSONUtil;
 import cn.brownqi.utils.ParameterUtils;
 
 import javax.servlet.ServletException;
@@ -22,19 +24,21 @@ import java.util.Optional;
 public class QueryOrdersServlet extends HttpServlet {
     OrderService orderService = new OrderServiceImpl();
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Map<Order, Good> ordersMap = null;
+        Result result = null;
         try{
             User user = (User) Optional.ofNullable(req.getSession().getAttribute("user")).orElseThrow(NoLoginException::new);
             ordersMap = orderService.queryOrders(user.getUserId());
-            req.setAttribute("orders",ordersMap);
-            req.getRequestDispatcher("/goodOrder.jsp").forward(req,resp);
+            result = Result.OK(2000,"成功",ordersMap);
         }catch (NoLoginException e){
             e.printStackTrace();
-            resp.sendRedirect("/userLogin.jsp");
+            result = Result.ERROR(4001,e.getMessage());
         }catch (Exception e){
             e.printStackTrace();
-            resp.sendRedirect("/error.jsp");
+            result = Result.ERROR(4000,e.getMessage());
+        }finally {
+            JSONUtil.writeJSON(resp,result);
         }
     }
 }

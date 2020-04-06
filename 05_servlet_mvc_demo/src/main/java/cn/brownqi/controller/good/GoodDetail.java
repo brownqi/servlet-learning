@@ -1,8 +1,10 @@
 package cn.brownqi.controller.good;
 
 import cn.brownqi.model.Good;
+import cn.brownqi.rest.Result;
 import cn.brownqi.service.GoodService;
 import cn.brownqi.service.impl.GoodServiceImpl;
+import cn.brownqi.utils.JSONUtil;
 import cn.brownqi.utils.ParameterUtils;
 
 import javax.servlet.ServletException;
@@ -12,18 +14,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/goodServlet/detail")
+@WebServlet("/goodServlet/detail/*")
 public class GoodDetail extends HttpServlet {
     GoodService goodService = new GoodServiceImpl();
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Result result = null;
         try{
             Good good = ParameterUtils.newModel(req, Good.class);
             Good goodDetail = goodService.searchGoodDetail(good.getGoodId());
-            req.setAttribute("good",goodDetail);
-            req.getRequestDispatcher("/goodDetails.jsp").forward(req,resp);
+            result = Result.OK(2000,"成功",goodDetail);
         }catch (Exception e){
             e.printStackTrace();
+            result = Result.ERROR(4000,e.getMessage());
+        }finally {
+            JSONUtil.writeJSON(resp,result);
         }
     }
 }

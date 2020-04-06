@@ -16,18 +16,18 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet("/userServlet/checkUserName")
+@WebServlet("/userServlet/checkUserName/*")
 public class UserCheckUserName extends HttpServlet {
 
     UserService userService = new UserServiceImpl();
 
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String uNmaes = req.getParameter("uNmae");
-        boolean flag = userService.existsUsername(uNmaes);
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String uName = req.getParameter("uName");
+        boolean flag = userService.existsUsername(uName);
         Map<String ,Boolean> map = new HashMap<>();
         map.put("result",flag);
-        Result result = Result.OK(200,"OK",map);
+        Result result = Result.OK(2000,"确认结果",map);
         JSONUtil.writeJSON(resp, result);
     }
 }

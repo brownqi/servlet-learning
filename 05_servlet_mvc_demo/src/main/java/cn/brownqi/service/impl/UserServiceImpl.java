@@ -13,12 +13,13 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao = new UserDaoImpl();
 
     @Override
-    public int addUser(User user) throws Exception {
+    public User addUser(User user) throws Exception {
         synchronized (user.getuName().intern()) { //str.intern() 会先判断 str 在字符串常量池中是否存在，若不存在则 在常量池中添加 str 返回该常量池中str的地址
             if (existsUsername(user.getuName())) {
                 throw new RuntimeException("用户已存在");
             } else {
-                return userDao.saveUser(user);
+                userDao.saveUser(user);
+                return user;
             }
         }
     }
